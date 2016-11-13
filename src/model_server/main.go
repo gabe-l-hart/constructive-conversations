@@ -54,8 +54,11 @@ func main() {
 		} else {
 			context.DB = db
 
-			// Add "accounts" bucket
+			// Add "accounts" and "identities" buckets
 			if err := SetupBucket("accounts", context); nil != err {
+				log.Fatal("Failed to add 'accounts' bucket")
+			}
+			if err := SetupBucket("identities", context); nil != err {
 				log.Fatal("Failed to add 'accounts' bucket")
 			}
 

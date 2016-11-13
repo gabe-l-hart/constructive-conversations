@@ -15,6 +15,7 @@ func AccountHandler(
 	if "POST" == r.Method {
 		// Create/Update //
 		log.Println("Handling POST to /account")
+		UpdateAccount(serverContext, w, r)
 
 	} else if "GET" == r.Method {
 		// Get //
