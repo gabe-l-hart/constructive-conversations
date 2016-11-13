@@ -53,6 +53,18 @@ func main() {
 			log.Fatalf("Failed to initialize database %s", cfg.DbFilename)
 		} else {
 			context.DB = db
+
+			// Add "accounts" bucket
+			if err := SetupBucket("accounts", context); nil != err {
+				log.Fatal("Failed to add 'accounts' bucket")
+			}
+
+			// Add initial identities
+			for _, idty := range cfg.Identities {
+				if err := AddIdentityIfNeeded(idty, context); nil != err {
+					log.Fatalf("Failed to add initial identity [%s]", idty)
+				}
+			}
 		}
 	}
 
