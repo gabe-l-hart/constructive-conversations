@@ -20,3 +20,7 @@ deps:
 	go get github.com/boltdb/bolt
 	go get -u github.com/golang/protobuf/{proto,protoc-gen-go}
 	go get google.golang.org/grpc
+
+.PHONY: install
+install:	$(LOCAL_GO_SRC)
+	go install $(LOCAL_PKG_NAMES)
