@@ -1,0 +1,10 @@
+{
+  "port": "54321",
+  "db-file": "model_server.db",
+  "log-file": "model_server.log",
+  "identities": [
+    "foo",
+    "bar",
+    "baz"
+  ]
+}

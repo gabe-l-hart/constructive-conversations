@@ -20,35 +20,25 @@ type ModelServerContext struct {
 func main() {
 
 	// Command line args //
-	port := flag.String(
-		"port",
-		"54321",
-		"port for incoming traffic",
-	)
 
-	dbFilename := flag.String(
-		"db-file",
-		"model.db",
-		"Filename for backend database storage",
-	)
-
-	logFilename := flag.String(
-		"log-file",
-		"model.log",
-		"Filename for backend log output",
+	config := flag.String(
+		"config",
+		"",
+		"Configuration file",
 	)
 
 	flag.Parse()
+	cfg := ParseConfig(*config)
 
 	// Logging //
 	{
 		handle, err := os.OpenFile(
-			*logFilename,
+			cfg.LogFilename,
 			os.O_RDWR|os.O_CREATE|os.O_APPEND,
 			0600)
 		defer handle.Close()
 		if nil != err {
-			log.Fatalf("Failed to open log file: %s", *logFilename)
+			log.Fatalf("Failed to open log file: %s", cfg.LogFilename)
 		} else {
 			log.SetOutput(io.MultiWriter(os.Stdout, handle))
 		}
@@ -57,10 +47,10 @@ func main() {
 	// Database //
 	context := ModelServerContext{}
 	{
-		db, err := bolt.Open(*dbFilename, 0600, &bolt.Options{Timeout: 5 * time.Second})
+		db, err := bolt.Open(cfg.DbFilename, 0600, &bolt.Options{Timeout: 5 * time.Second})
 		defer db.Close()
 		if nil != err {
-			log.Fatalf("Failed to initialize database %s", *dbFilename)
+			log.Fatalf("Failed to initialize database %s", cfg.DbFilename)
 		} else {
 			context.DB = db
 		}
@@ -69,5 +59,5 @@ func main() {
 	// Server //
 	log.Println("Starting the Model Server!")
 	http.HandleFunc("/", EndpointRouter(context))
-	http.ListenAndServe(":"+*port, nil)
+	http.ListenAndServe(":"+cfg.Port, nil)
 }
